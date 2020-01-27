@@ -1,1 +1,75 @@
+# Knitr and RMarkdown
 
+- R Markdown is a file format used by R to generate dynamic documents that can contain embedded R code and plots.
+- Text is written using the markdown format.
+- Markdown formatting is also used by Github and Wordpress.
+- Knitr can then be used to output the R markdown document in multiple formats, such as HTML or PDF.
+
+
+# Prerequisite
+
+Install the following packages:
+install.packages('dplyr')
+install.packages('ggplot2')
+install.packages('rmarkdown')
+install.packages('knitr')
+install.packages('data.table')
+
+Open the example.Rmd file in Rstudio.
+
+
+# Rendering Output
+
+- RStudio: click the "Knit" button (OSX: Command+Shift+K, Win: Ctrl+Shift+K)
+- Console: rmarkdown::render function
+rmarkdown::render("example.Rmd")
+
+- Aside: why is rmarkdown followed by the double colon sign?
+- The formal name of it is called NAMESPACE. TL;DR
+- Try the following commands below:
+library(plyr)
+library(dplyr)
+?summarise
+
+
+# R Code Chunks
+
+- We wrap regular R code within three backquotes and assign a name to the chunk, cars in this example. Then we can easily navigate through different code chunks.
+- Makes it easy to group related code together so it can be evaluated at the same time.
+```{r cars, echo=TRUE}
+summary(cars)
+```
+
+
+# Important Chunk Options
+- echo(TRUE): whether to include R source code in the output file
+- eval(TRUE): whether to evaluate the code chunk
+- cache(TRUE): if nothing changed in the code chunk from a previous run then it will use the previous result as the output. Good for loading large dataset
+- warning(TRUE): whether to preserve warnings in the output
+- message(TRUE): whether to preserve message when load the library in the output
+
+
+# Plots
+- RMarkdown has its own standalone environment, including working directory.
+- It will render the file from the beginning to the end so you need to load the library in the rmarkdown file no matter what you did in the current R session.
+```{r echo=TRUE, fig.height=7, fig.width=9, dev='png'}
+library(ggplot2)
+ggplot(data = diamonds, aes(x = color)) +
+geom_bar(aes(fill = cut), position = "dodge")
+```
+
+# Saving plots
+- dev('png'): figure format(png, jpeg, tiff, svg, ...)
+- fig.path('./figure/'): figure path (save the image to the figure subdirectory)
+- fig.width(7): figure width in inches
+- fig.height(7): figure height in inches
+
+
+# Miscellaneous
+- Always use relative path to read your data instead of setwd() to make your project reproducible.
+```{r load_data, cache=TRUE, warning=FALSE}
+library(data.table)
+raw.df <- fread("./data.csv", stringsAsFactors = F)
+raw.df <- as.data.frame(raw.df)
+str(raw.df)
+```
